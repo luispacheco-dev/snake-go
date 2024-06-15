@@ -34,6 +34,9 @@ func NewGame() *Game {
 
 func (g *Game) Update() error {
 	g.snake.Update()
+	if g.checkCollisionSnakeBoard() {
+		return fmt.Errorf("Snake hit board limits.")
+	}
 	return nil
 }
 
@@ -48,4 +51,19 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return outsideWidth, outsideHeight
+}
+
+// ---
+
+func (g *Game) checkCollisionSnakeBoard() bool {
+	bx := g.board.x
+	bMaxX := bx + g.board.width
+
+	by := g.board.y
+	bMaxY := by + g.board.height
+
+	sx := g.snake.head.x
+	sy := g.snake.head.y
+
+	return sx <= bx || (sx+g.snake.width) >= bMaxX || sy <= by || (sy+g.snake.height) >= bMaxY
 }
