@@ -32,7 +32,10 @@ func NewGame() *Game {
 	return g
 }
 
-func (g *Game) Update() error { return nil }
+func (g *Game) Update() error {
+	g.snake.Update()
+	return nil
+}
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("SCORE: %d", g.score))
