@@ -12,6 +12,7 @@ import (
 type Game struct {
 	score int
 	board Rect
+	snake *Snake
 }
 
 func NewGame() *Game {
@@ -22,10 +23,13 @@ func NewGame() *Game {
 		height: 400,
 	}
 
-	return &Game{
+	g := &Game{
 		score: 0,
 		board: board,
 	}
+
+	g.snake = NewSnake(g)
+	return g
 }
 
 func (g *Game) Update() error { return nil }
@@ -35,6 +39,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	clr := color.RGBA{161, 195, 152, 0}
 	vector.DrawFilledRect(screen, g.board.x, g.board.y, g.board.width, g.board.height, clr, false)
+
+	g.snake.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
