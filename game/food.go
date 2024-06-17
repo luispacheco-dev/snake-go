@@ -33,8 +33,8 @@ func (f *Food) Draw(screen *ebiten.Image) {
 // ---
 
 func (f *Food) randomXY(b Rect) {
-	f.x = randRange(b.x, b.x+b.width)
-	f.y = randRange(b.y, b.y+b.height)
+	f.x = randRange(b.x, b.x+b.width-f.width)
+	f.y = randRange(b.y, b.y+b.height-f.height)
 }
 
 //---
