@@ -13,6 +13,7 @@ type Game struct {
 	score int
 	board Rect
 	snake *Snake
+	food  *Food
 }
 
 func NewGame() *Game {
@@ -28,6 +29,7 @@ func NewGame() *Game {
 		board: board,
 	}
 
+	g.food = NewFood(g)
 	g.snake = NewSnake(g)
 	return g
 }
@@ -36,6 +38,10 @@ func (g *Game) Update() error {
 	g.snake.Update()
 	if g.checkCollisionSnakeBoard() {
 		return fmt.Errorf("Snake hit board limits.")
+	}
+	if g.checkCollisionSnakeFood() {
+		g.score++
+		g.food.randomXY(g.board)
 	}
 	return nil
 }
@@ -46,6 +52,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	clr := color.RGBA{161, 195, 152, 0}
 	vector.DrawFilledRect(screen, g.board.x, g.board.y, g.board.width, g.board.height, clr, false)
 
+	g.food.Draw(screen)
 	g.snake.Draw(screen)
 }
 
@@ -66,4 +73,20 @@ func (g *Game) checkCollisionSnakeBoard() bool {
 	sy := g.snake.head.y
 
 	return sx <= bx || (sx+g.snake.width) >= bMaxX || sy <= by || (sy+g.snake.height) >= bMaxY
+}
+
+func (g *Game) checkCollisionSnakeFood() bool {
+	sx := g.snake.head.x
+	sMaxX := sx + g.snake.width
+
+	sy := g.snake.head.y
+	sMaxY := sy + g.snake.height
+
+	fx := g.food.x
+	fMaxX := fx + g.food.width
+
+	fy := g.food.y
+	fMaxY := fy + g.food.height
+
+	return sx <= fMaxX && sMaxX >= fx && sy <= fMaxY && sMaxY >= fy
 }
