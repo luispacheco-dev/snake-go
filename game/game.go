@@ -35,15 +35,18 @@ func NewGame() *Game {
 }
 
 func (g *Game) Update() error {
-	g.snake.Update()
 	if g.checkCollisionSnakeBoard() {
 		return fmt.Errorf("Snake hit board limits.")
+	}
+	if g.checkCollisionSnakeSnake() {
+		return fmt.Errorf("Snake bit its own body/tail.")
 	}
 	if g.checkCollisionSnakeFood() {
 		g.score++
 		g.snake.Grow()
 		g.food.randomXY(g.board)
 	}
+	g.snake.Update()
 	return nil
 }
 
@@ -90,4 +93,28 @@ func (g *Game) checkCollisionSnakeFood() bool {
 	fMaxY := fy + g.food.height
 
 	return sx <= fMaxX && sMaxX >= fx && sy <= fMaxY && sMaxY >= fy
+}
+
+func (g *Game) checkCollisionSnakeSnake() bool {
+	if g.snake.head == g.snake.tail {
+		return false
+	}
+
+	sx := g.snake.head.x
+	sy := g.snake.head.y
+
+	snakePortion := g.snake.head.nextPortion
+	for snakePortion.nextPortion != nil {
+		spx := snakePortion.x
+		spy := snakePortion.y
+		if sx == spx && sy == spy {
+			return true
+		}
+		snakePortion = snakePortion.nextPortion
+		if snakePortion == g.snake.tail {
+			return sx == snakePortion.x && sy == snakePortion.y
+		}
+	}
+
+	return false
 }
