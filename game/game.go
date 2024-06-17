@@ -41,6 +41,7 @@ func (g *Game) Update() error {
 	}
 	if g.checkCollisionSnakeFood() {
 		g.score++
+		g.snake.Grow()
 		g.food.randomXY(g.board)
 	}
 	return nil

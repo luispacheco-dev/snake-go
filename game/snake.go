@@ -76,11 +76,21 @@ func (s *Snake) Update() {
 
 func (s *Snake) Draw(screen *ebiten.Image) {
 	vector.DrawFilledRect(screen, s.head.x, s.head.y, s.width, s.height, color.Black, false)
+	snakePortion := s.head
+	for snakePortion.nextPortion != nil {
+		vector.DrawFilledRect(screen, snakePortion.x, snakePortion.y, s.width, s.height, color.Black, false)
+		snakePortion = snakePortion.nextPortion
+		if snakePortion == s.tail {
+			vector.DrawFilledRect(screen, snakePortion.x, snakePortion.y, s.width, s.height, color.Black, false)
+		}
+	}
 }
 
 // ---
 
-func (s *Snake) Grow() {}
+func (s *Snake) Grow() {
+	s.changeHead()
+}
 
 // ---
 
